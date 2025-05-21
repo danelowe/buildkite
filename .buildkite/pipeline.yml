@@ -1,0 +1,33 @@
+steps:
+  - label: "Build a docker image"
+    commands:
+      - "printenv"
+    plugins:
+      - ecr#v2.9.0:
+          login: true
+          retries: 1
+      - docker#v5.12.0:
+          image: 438465132069.dkr.ecr.us-east-1.amazonaws.com/dockerhub/library/docker:latest
+          workdir: /app
+          volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - .:/app
+            - /cache:/cache
+          propagate-aws-auth-tokens: true
+          environment:
+            - BUILDKITE_BUILD_NUMBER
+#  - label: ":zap: Parallel Jobs"
+#    command: "/app/.buildkite/steps/parallel-steps/parallel-steps.sh"
+#    parallelism: 2
+#    plugins:
+#      - ecr#v2.9.0:
+#          login: true
+#          retries: 1
+#      - docker#v5.12.0:
+#          image: 438465132069.dkr.ecr.us-east-1.amazonaws.com/dockerhub/library/ubuntu:noble-20240801
+#          workdir: /app
+#          volumes:
+#            - ./.buildkite:/app/.buildkite
+#          propagate-aws-auth-tokens: true
+#          environment:
+#            - BUILDKITE_BUILD_NUMBER
